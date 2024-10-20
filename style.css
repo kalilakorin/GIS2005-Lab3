@@ -1,51 +1,36 @@
-html, body {
+html, body, .container {
     height: 100%;
     padding: 0px;
     margin: 0px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
   }
   
   * {
     box-sizing: border-box;
   }
   
-  .header  {
-    top: 0px;
-    height: 100px;
-    width: 1024px;
-    position: absolute;
-    background-color: blue;
-  }
-  
-  .footer  {
-    top: 650px;
-    height: 50px;
-    width: 1024px;
-    position: absolute;
+  .header, .footer {
+    flex: none;
     background-color: blue;
   }
   
   .content {
-    top: 100px;
-    left: 0px;
-    width: 1024px;
-    height: 550px;
-    position: absolute;
-    
+    flex: auto;
+    display: flex;
+    flex-direction: row;
   }
   
   .sidebar {
-    left: 0px;
-    width: 200px;
-    height: 550px;
-    position: absolute;
+    flex: 30%;
     background-color: red;
   }
   
   .main {
-    left: 200px;
-    width: 824px;
-    height: 550px;
-    position: absolute;
+    flex: 70%;
     background-color: yellow;
   }
   
