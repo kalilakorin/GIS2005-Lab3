@@ -1,0 +1,65 @@
+html, body {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  .header  {
+    top: 0px;
+    height: 100px;
+    width: 1024px;
+    position: absolute;
+    background-color: blue;
+  }
+  
+  .footer  {
+    top: 650px;
+    height: 50px;
+    width: 1024px;
+    position: absolute;
+    background-color: blue;
+  }
+  
+  .content {
+    top: 100px;
+    left: 0px;
+    width: 1024px;
+    height: 550px;
+    position: absolute;
+    
+  }
+  
+  .sidebar {
+    left: 0px;
+    width: 200px;
+    height: 550px;
+    position: absolute;
+    background-color: red;
+  }
+  
+  .main {
+    left: 200px;
+    width: 824px;
+    height: 550px;
+    position: absolute;
+    background-color: yellow;
+  }
+  
+  #map {
+    height: 100%;
+    width: 100%;
+  }
+  
+  #layers, #legend {
+    height: 50%;
+  }
+  
+  @media screen and (max-width: 1024px) {
+    .content {   
+      flex-direction: column;
+    }
+  }
