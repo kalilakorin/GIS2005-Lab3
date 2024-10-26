@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+
     <title>Lab 3 Denver Streets</title>
 
     <!-- Your styles from style.css -->
@@ -11,7 +14,10 @@
 
     <!-- Mapbox JS and CSS -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
 
     <script src="script.js"></script>
   </head>
@@ -22,29 +28,62 @@
       <div class="header">
         <h1>Lab 3 Part 2</h1>
       </div>
-      
+
       <!-- Main content -->
-      <div class="content">  
+      <div class="content">
         <div class="sidebar">
           <div id="layers">
             <h2>Layers</h2>
+            <div class="layer-items">
+              <div class="layer-row">
+                <input type="checkbox" id="chkBuildings" checked />
+                <label for="chkBuildings">Buildings</label>
+              </div>
+              <div class="layer-row">
+                <input type="checkbox" id="chkFoodStores" checked />
+                <label for="chkFoodStores">Food Stores</label>
+              </div>
+            </div>
           </div>
           <div id="legend">
             <h2>Legend</h2>
+            <div class="legend-items">
+              <div class="legend-row">
+                <div class="legend-symbol residential"></div>
+                <div class="legend-label">Residential</div>
+              </div>
+              <!-- Add more legend rows -->
+              <div class="legend-row">
+                <div class="legend-symbol commercial"></div>
+                <div class="legend-label">Commercial</div>
+              </div>
+              <div class="legend-row">
+                <div class="legend-symbol industrial"></div>
+                <div class="legend-label">Industrial</div>
+              </div>
+              <div class="legend-row">
+                <div class="legend-symbol public"></div>
+                <div class="legend-label">Public</div>
+              </div>
+              <div class="legend-row">
+                <div class="legend-symbol medical"></div>
+                <div class="legend-label">Medical</div>
+              </div>
+            </div>
           </div>
         </div>
-        
+
         <div class="main">
           <div id="map"><h2>Map</h2></div>
         </div>
       </div>
-      
+
       <!-- Footer -->
       <div class="footer">
         <p>FRCC: GIS 2005 Lab 3</p>
       </div>
     </div>
-    
+
     <!-- JavaScript imports come after this line -->
 
     <!-- Mapbox GL JS script -->
