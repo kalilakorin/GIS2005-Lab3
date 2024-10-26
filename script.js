@@ -5,35 +5,23 @@ var map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/jmfrimml/cm2mpg0rz001601r6drnafwgr",
   center: [-104.88799, 39.78023],
-  zoom: 13,
+  zoom: 13
 });
 
 map.addControl(
   new mapboxgl.AttributionControl({
-    customAttribution: "Icons from www.flaticon.com licensed by CC 3.0",
+    customAttribution: "Icons from www.flaticon.com licensed by CC 3.0"
   })
 );
 
 map.addControl(new mapboxgl.NavigationControl());
-// const projection2 = map.getProjection;
-// const projection2 = map.getProjection();
-// const projection2 = map.getProjection().name;
-// const projection2 = map.getProjection.name;
-// map.setProjection('albers');
-// console.log("Start projection: " + map.getProjection.name);
 
 map.on("load", function () {
   console.log("Map load function...");
-  // const projection = map.getProjection;
-  // const projection = map.getProjection();
-  // const projection = map.getProjection().name;
-  // const projection = map.getProjection.name;
-  map.setProjection('albers');
-  console.log("Start projection: " + map.getProjection());
 
   // create a popup, but don't add it to the map yet
   const popup = new mapboxgl.Popup({
-    closeOnClick: false,
+    closeOnClick: false
   });
 
   // a point to see what the coordinates are for a feature
@@ -44,15 +32,15 @@ map.on("load", function () {
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [-104.88799, 39.78023],
-        },
-      },
-    ],
+          coordinates: [-104.88799, 39.78023]
+        }
+      }
+    ]
   };
 
   map.addSource("point", {
     type: "geojson",
-    data: geojson,
+    data: geojson
   });
 
   // open street layer
@@ -65,8 +53,8 @@ map.on("load", function () {
         tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
         tileSize: 256,
         attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      },
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }
     },
     "denver-buildings",
     "denver-food-stores"
@@ -78,42 +66,34 @@ map.on("load", function () {
     source: "point",
     paint: {
       "circle-radius": 10,
-      "circle-color": "#F84C4C", // red color
-    },
+      "circle-color": "#F84C4C" // red color
+    }
   });
 
   map.on("click", "denver-buildings", function (e) {
     const id = e.features[0].properties.id;
     const type = e.features[0].properties.type;
-    // const coordinates = e.features[0].geometry.coordinates.slice();
-    // console.log("coordinates\n" + coordinates);
-    console.log("lng lat: " + e.lngLat);
-    console.log("lat: " + e.lngLat.lat + " lang: " + e.lngLat.lng);
+    const coords = e.lngLat;
+    console.log("lng lat: " + coords);
+    console.log("lat: " + coords.lat + " long: " + coords.lng);
 
     // popup = new mapboxgl.Popup()
     popup
-      .setLngLat(e.lngLat)
+      .setLngLat(coords)
       .setHTML(id + ": " + type)
       .addTo(map);
-    // new mapboxgl.Popup()
-    //   .setLngLat(coordinates)
-    //   .setHTML(id + ": " + type)
-    //   .addTo(map);
 
-    // map.on('mouseleave', 'denver-buildings', function (e) {
-    //   map.getCanvas().style.cursor= '';
-    //   popup.remove();
-    // });
-
-    //set the geojason point
-    geojson.features[0].geometry.coordinates = [e.lngLat.lng, e.lngLat.lat];
+    //set the geojson point to be where click occurrs
+    geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
     map.getSource("point").setData(geojson);
   });
 
+  // change mouse pointer when it enters a building
   map.on("mouseenter", "denver-buildings", function (e) {
     map.getCanvas().style.cursor = "crosshair";
   });
 
+  // change mouse pointer when it leaves a building
   map.on("mouseleave", "denver-buildings", function (e) {
     map.getCanvas().style.cursor = "";
     // popup.remove();
@@ -140,4 +120,4 @@ function visibilityToggle(e) {
   } else {
     map.setLayoutProperty(e.target.id, "visibility", "none");
   }
-}
+};
