@@ -51,24 +51,24 @@ map.on("load", function () {
   );
 });
 
-var chkBuildingsElement = document.getElementById("chkBuildings");
+var chkBuildingsElement = document.getElementById("denver-buildings");
 chkBuildingsElement.onclick = function (e) {
   console.log("Building layer checked");
-  var isChecked = e.target.checked;
-  if (isChecked) {
-    map.setLayoutProperty("denver-buildings", "visibility", "visible");
-  } else {
-    map.setLayoutProperty("denver-buildings", "visibility", "none");
-  }
+  visibilityToggle(e);
 };
 
-var chkFoodStoresElement = document.getElementById("chkFoodStores");
+var chkFoodStoresElement = document.getElementById("denver-food-stores");
 chkFoodStoresElement.onclick = function (e) {
   console.log("Food Stores layer checked");
-  var isChecked = e.target.checked;
-  if (isChecked) {
-    map.setLayoutProperty("denver-food-stores", "visibility", "visible");
-  } else {
-    map.setLayoutProperty("denver-food-stores", "visibility", "none");
-  }
+  visibilityToggle(e);  
 };
+
+function visibilityToggle(e) {
+    var isChecked = e.target.checked;
+    console.log("id: " + e.target.id);
+    if (isChecked) {
+        map.setLayoutProperty(e.target.id, 'visibility', 'visible');
+    } else {
+        map.setLayoutProperty(e.target.id, 'visibility', 'none');
+    }
+}
