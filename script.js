@@ -65,7 +65,7 @@ map.on("load", function () {
     type: "circle",
     source: "point",
     paint: {
-      "circle-radius": 10,
+      "circle-radius": 5,
       "circle-color": "#F84C4C" // red color
     }
   });
