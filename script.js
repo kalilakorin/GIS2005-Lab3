@@ -14,10 +14,16 @@ map.addControl(
   })
 );
 
+// map zoom and rotation
 map.addControl(new mapboxgl.NavigationControl());
+
+// global variable for food stores
+var denverFoodStoreFeatures = [];
 
 map.on("load", function () {
   console.log("Map load function...");
+    // wait a half second befo executing loadFeatures
+  setTimeout(loadFeatures, 500);
 
   // create a popup, but don't add it to the map yet
   const popup = new mapboxgl.Popup({
@@ -37,10 +43,27 @@ map.on("load", function () {
       }
     ]
   };
-
   map.addSource("point", {
     type: "geojson",
     data: geojson
+  });
+
+  // a point to see what the coordinates are for a food feature
+  const foodGeojson = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [-104.88799, 39.78023]
+        }
+      }
+    ]
+  };
+  map.addSource("foodPoint", {
+    type: "geojson",
+    data: foodGeojson
   });
 
   // open street layer
@@ -60,6 +83,7 @@ map.on("load", function () {
     "denver-food-stores"
   );
 
+  // for troubleshooting, setup for a point that will appear once a user clicks a building on the map
   map.addLayer({
     id: "point",
     type: "circle",
@@ -70,22 +94,55 @@ map.on("load", function () {
     }
   });
 
-  map.on("click", "denver-buildings", function (e) {
-    const id = e.features[0].properties.id;
-    const type = e.features[0].properties.type;
-    const coords = e.lngLat;
-    console.log("lng lat: " + coords);
-    console.log("lat: " + coords.lat + " long: " + coords.lng);
+  // for troubleshooting, setup for a point that will appear to the nearest food store
+  map.addLayer({
+    id: "foodPoint",
+    type: "circle",
+    source: "foodPoint",
+    paint: {
+      "circle-radius": 7,
+      "circle-color": "#000000" //black
+    }
+  });
 
-    // popup = new mapboxgl.Popup()
+  // map click on a building
+  map.on("click", "denver-buildings", function (e) {
+    const id = e.features[0].properties.id; // building id number
+    const type = e.features[0].properties.type; // building type i.e. commercial
+    const clickCoords = e.lngLat;  // this is the first set of coordinates that is found for the click specific
+    console.log("click coords: " + clickCoords);
+    // console.log("lat: " + clickCoords.lat + " long: " + clickCoords.lng);
+
+    // building polygon -> centroid -> coordinates of centroid
+    let buildingCoords = e.features[0].geometry.coordinates.slice();  // get all coordinates of the building
+    let buildingPolygon = turf.polygon(buildingCoords); // turf polygon of building footprint
+    let buildingCentroid = turf.centroid(buildingPolygon);  // find center of building
+    let centroidCoords = buildingCentroid.geometry.coordinates;  // coordinates for the center of the building
+
+    let foodStoreFeatureCollection = turf.featureCollection(denverFoodStoreFeatures);  // feature collection for the food stores
+    let targetPoint = turf.point(centroidCoords);
+    let nearestPoint = turf.nearestPoint(targetPoint, foodStoreFeatureCollection);  // find the nearest food store from collection
+    let distance = turf.distance(targetPoint, nearestPoint, {units: 'feet'}).toFixed(2);
+   
+    // troubleshooting outputs
+    console.log("Centroid coords: " + centroidCoords);
+    console.log("Nearest point: " + nearestPoint.geometry.coordinates);
+    console.log("Distance to closest food store: " + distance + " ft");
+
+    // add building info to the popup
     popup
-      .setLngLat(coords)
-      .setHTML(id + ": " + type)
+      // .setLngLat(clickCoords)
+      .setLngLat(centroidCoords)
+      .setHTML(id + ": " + type + "<br>Nearest food store: " + distance + " ft")
       .addTo(map);
 
-    //set the geojson point to be where click occurrs
-    geojson.features[0].geometry.coordinates = [coords.lng, coords.lat];
+    // set the geojson point to be where click occurrs
+    // geojson.features[0].geometry.coordinates = [clickCoords.lng, clickCoords.lat]; 
+    geojson.features[0].geometry.coordinates = [centroidCoords[0], centroidCoords[1]];
     map.getSource("point").setData(geojson);
+    foodCoords = nearestPoint.geometry.coordinates;
+    foodGeojson.features[0].geometry.coordinates = [foodCoords[0], foodCoords[1]];
+    map.getSource("foodPoint").setData(foodGeojson);
   });
 
   // change mouse pointer when it enters a building
@@ -100,6 +157,11 @@ map.on("load", function () {
   });
 });
 
+function loadFeatures() {
+  denverFoodStoreFeatures = map.queryRenderedFeatures({ layers: ["denver-food-stores"] });
+  console.log("loadFeatures function: " + denverFoodStoreFeatures.length);
+}
+
 var chkBuildingsElement = document.getElementById("denver-buildings");
 chkBuildingsElement.onclick = function (e) {
   console.log("Building layer checked");
@@ -112,6 +174,7 @@ chkFoodStoresElement.onclick = function (e) {
   visibilityToggle(e);
 };
 
+// turn layer on or
 function visibilityToggle(e) {
   var isChecked = e.target.checked;
   console.log("id: " + e.target.id);
